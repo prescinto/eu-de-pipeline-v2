@@ -11,10 +11,10 @@ import asyncio
     
 
 dag = DAG(
-    dag_id="sma-v2",
+    dag_id="sma-v3",
     start_date=datetime(2024,6,1),
     catchup=False,
-    schedule_interval="0 */5 * * *",
+    schedule_interval="*/5 * * * *",
 )
 
 Pipeline_Id = 'PIPE00001'

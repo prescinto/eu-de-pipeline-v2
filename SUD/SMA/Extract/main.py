@@ -7,9 +7,6 @@ import json
 import pandas as pd
 import os
 import ast
-import time
-import sys
-# from de_logger.de_logger import DeLogger
 import logging
 from datetime import datetime
 from SUD.SMA.utils import prd_utils
@@ -178,7 +175,7 @@ class Extract():
                 for i in dtColumns:
                     main_device_df[i] = main_device_df[i].dt.strftime("%Y-%m-%d %H:%M:%S")
             json_data[deviceTyp] = main_device_df.to_dict('records')
-        file_time = datetime.now().strftime("%Y%m%d%H%")
+        file_time = datetime.now().strftime("%Y%m%d%H%M%S")
         print(f"{file_time=}")
         asyncio.run(blob_utils.save_data_to_blob_storage(self.plant_id, json_data, file_time, 'Extract'))
         return 

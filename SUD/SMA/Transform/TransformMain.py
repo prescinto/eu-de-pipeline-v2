@@ -29,7 +29,7 @@ class Transform():
                 device_mapping = {}
                 for d in device_details:
                     device_mapping[d[2]]=d[3]
-                # df['device_id'] = df['device_id'].map(device_mapping)
+                df['device_id'] = df['device_id'].map(device_mapping)
                 df.set_index('time', inplace=True)
                 # tag_details
                 tag_names = self.get_tag_index(tag_details, device_cat)

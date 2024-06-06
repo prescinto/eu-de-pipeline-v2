@@ -104,10 +104,10 @@ async def move_blob(plant, files, plugin_type='Extract'):
             else:
                 print(f"Failed to copy blob: {properties.copy.status_description}")
             
-            src_blob_client.close()
-            dest_blob_client.close()
+            await src_blob_client.close()
+            await dest_blob_client.close()
             
-        src_container_client.close()
+        await src_container_client.close()
     except Exception as e:
         print(f"Error moving blob: {str(e)}")
 

@@ -75,8 +75,12 @@ class FtpUpload():
     def create_csv_for_device(self, device_key, device_name, row_data_new):
         print(f"create_csv_for_device: {device_name=}")
         try:
+            try:
+                os.mkdir(f"/home/prescintouser/SUD_SMA/{self.PlantId}")
+            except:
+                pass
             dev_col = device_name
-            file_name = f"/home/prescintouser/SUD/SMA/{device_name}_{self.file_time}_{str(int(time.time()))}.csv"
+            file_name = f"/home/prescintouser/SUD_SMA/{self.PlantId}/{device_name}_{self.file_time}_{str(int(time.time()))}.csv"
             print(f"create_csv_for_device: {file_name=}")
             # file_name = f"{device_name}_{str(int(time.time()))}.csv"
             time_col = 'time'
@@ -135,13 +139,15 @@ class FtpUpload():
         ftp.cwd(subDirectory)
         with open(input_file, 'rb') as fp:
             ftp.storbinary(f"STOR {input_file}", fp)
-        self.deLogger.info(plant_id=self.PlantId, event_id=np.nan, event_message=f"Uploaded file - {input_file}",
-                           event_time=str(datetime.now()), event_source=self.EventSource)
+        print(f"Uploaded file - {input_file}")
+        # self.deLogger.info(plant_id=self.PlantId, event_id=np.nan, event_message=f"Uploaded file - {input_file}",
+        #                    event_time=str(datetime.now()), event_source=self.EventSource)
         os.remove(input_file)
         ftp.cwd("...")
-        self.deLogger.info(plant_id=self.PlantId, event_id=np.nan,
-                           event_message=f'Local file removed and FTP connection closed.', event_time=str(datetime.now()),
-                           event_source=self.EventSource)
+        print(f'Local file removed and FTP connection closed.')
+        # self.deLogger.info(plant_id=self.PlantId, event_id=np.nan,
+        #                    event_message=f'Local file removed and FTP connection closed.', event_time=str(datetime.now()),
+        #                    event_source=self.EventSource)
 
     def upload_to_sftp(self, sftp, input_file, device_key):
         if device_key is None:
@@ -159,13 +165,15 @@ class FtpUpload():
                 pass
             with sftp.cd(subDirectory):
                 sftp.put(input_file)
-                self.deLogger.info(plant_id=self.PlantId, event_id=np.nan,
-                                   event_message=f"Uploaded file - {input_file}", event_time=str(datetime.now()),
-                                   event_source=self.EventSource)
+                print(f"Uploaded file - {input_file}")
+                # self.deLogger.info(plant_id=self.PlantId, event_id=np.nan,
+                #                    event_message=f"Uploaded file - {input_file}", event_time=str(datetime.now()),
+                #                    event_source=self.EventSource)
         os.remove(input_file)
-        self.deLogger.info(plant_id=self.PlantId, event_id=np.nan,
-                           event_message=f'Local file removed and FTP connection closed.', event_time=str(datetime.now()),
-                           event_source=self.EventSource)
+        print(f'Local file removed and FTP connection closed.')
+        # self.deLogger.info(plant_id=self.PlantId, event_id=np.nan,
+        #                    event_message=f'Local file removed and FTP connection closed.', event_time=str(datetime.now()),
+        #                    event_source=self.EventSource)
 
 
     def save_data_ftp(self):
@@ -177,9 +185,10 @@ class FtpUpload():
                         row_data = self.json_data[device_key][device_name]
                         file_name = self.create_csv_for_device(device_key, device_name, row_data)
                         gzip_file = self.compress_to_gzip(file_name)
-                        self.deLogger.info(plant_id=self.PlantId, event_id=np.nan,
-                                           event_message=f'Gzip Created - {gzip_file}. Uploading to FTP...',
-                                           event_time=str(datetime.now()), event_source=self.EventSource)
+                        print(f'Gzip Created - {gzip_file}. Uploading to FTP...')
+                        # self.deLogger.info(plant_id=self.PlantId, event_id=np.nan,
+                        #                    event_message=f'Gzip Created - {gzip_file}. Uploading to FTP...',
+                        #                    event_time=str(datetime.now()), event_source=self.EventSource)
                         try:
                             self.upload_to_ftp(ftp, gzip_file, device_key)
                         except:
@@ -188,9 +197,10 @@ class FtpUpload():
                             self.upload_to_ftp(ftp, gzip_file, device_key)
                         print(f'Upload to FTP Complete for {gzip_file}.')
                     except Exception as ex:
-                        self.deLogger.error(plant_id=self.PlantId, event_id=np.nan,
-                                            event_message=f'Failure in Uploading Files - {str(ex)}',
-                                            event_time=str(datetime.now()), event_source=self.EventSource)
+                        print(f'Failure in Uploading Files - {str(ex)}')
+                        # self.deLogger.error(plant_id=self.PlantId, event_id=np.nan,
+                        #                     event_message=f'Failure in Uploading Files - {str(ex)}',
+                        #                     event_time=str(datetime.now()), event_source=self.EventSource)
 
     def save_data_sftp(self):
         cnopts = pysftp.CnOpts()
